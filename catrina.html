@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catrina</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #1a0a2e;
+      --bg2:       #2d1b4e;
+      --dorado:    #FFD700;
+      --rosa:      #E91E8C;
+      --texto:     #F5F0E8;
+      --gris:      #9e8fb5;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--texto);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg2);
+      border-bottom: 2px solid var(--dorado);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--dorado);
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--rosa);
+      flex-shrink: 0;
+    }
+
+    .nav-logo span { color: var(--rosa); }
+
+    .search-bar {
+      flex: 1;
+      display: flex;
+      background: var(--bg);
+      border: 1.5px solid var(--dorado);
+      border-radius: 30px;
+      overflow: hidden;
+    }
+
+    .search-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--texto);
+      padding: 8px 16px;
+      font-size: 0.95rem;
+    }
+
+    .search-bar input::placeholder { color: var(--gris); }
+
+    .search-bar button {
+      background: var(--dorado);
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--bg);
+      font-weight: bold;
+    }
+
+    .nav-icons {
+      display: flex;
+      gap: 16px;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .nav-icons span {
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-icons span:hover { color: var(--rosa); }
+
+    /* ── CATEGORÍAS ── */
+    .categorias {
+      display: flex;
+      gap: 10px;
+      padding: 14px 20px;
+      overflow-x: auto;
+      background: var(--bg);
+      border-bottom: 1px solid var(--bg2);
+    }
+
+    .categorias::-webkit-scrollbar { height: 4px; }
+    .categorias::-webkit-scrollbar-thumb { background: var(--dorado); border-radius: 4px; }
+
+    .cat-btn {
+      flex-shrink: 0;
+      background: var(--bg2);
+      color: var(--texto);
+      border: 1.5px solid var(--bg2);
+      border-radius: 20px;
+      padding: 7px 18px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn:hover,
+    .cat-btn.activo {
+      background: var(--rosa);
+      border-color: var(--rosa);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── CONTENIDO PRINCIPAL (placeholder) ── */
+    .main {
+      padding: 20px;
+      text-align: center;
+      color: var(--gris);
+      margin-top: 40px;
+      font-size: 0.95rem;
+    }
+    /* ── FEED WRAPPER ── */
+    .feed-wrapper { padding: 20px; max-width: 900px; margin: 0 auto; }
+
+    .seccion { margin-bottom: 40px; }
+
+    .seccion-titulo {
+      font-size: 1.1rem;
+      color: var(--dorado);
+      border-left: 4px solid var(--rosa);
+      padding-left: 10px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* ── CULTURA GRID ── */
+    .cultura-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .cultura-card {
+      background: var(--bg2);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #3d2a60;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .cultura-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--dorado);
+    }
+
+    .cultura-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+
+    .cultura-card-info {
+      padding: 10px 12px;
+    }
+
+    .cultura-card-info h3 {
+      font-size: 0.92rem;
+      color: var(--dorado);
+      margin-bottom: 4px;
+    }
+
+    .cultura-card-info p {
+      font-size: 0.78rem;
+      color: var(--gris);
+      line-height: 1.4;
+    }
+
+    /* ── TIENDA LISTA ── */
+    .tienda-lista {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .tienda-card {
+      background: var(--bg2);
+      border-radius: 14px;
+      border: 1px solid #3d2a60;
+      display: flex;
+      gap: 14px;
+      padding: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      align-items: center;
+    }
+
+    .tienda-card:hover {
+      border-color: var(--rosa);
+      transform: translateX(4px);
+    }
+
+    .tienda-card img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .tienda-info { flex: 1; }
+
+    .tienda-info h3 {
+      font-size: 1rem;
+      color: var(--texto);
+      margin-bottom: 4px;
+    }
+
+    .tienda-info .vendedor {
+      font-size: 0.8rem;
+      color: var(--gris);
+      margin-bottom: 6px;
+    }
+
+    .tienda-info .precio {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dorado);
+    }
+
+    .tienda-info .precio span {
+      font-size: 0.75rem;
+      color: var(--gris);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+
+    .btn-comprar {
+      background: var(--rosa);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .btn-comprar:hover { background: var(--dorado); color: var(--bg); }
+
+    /* ── ORDEN BTNS ── */
+    .orden-btns { display: flex; gap: 8px; }
+
+    .orden-btn {
+      background: var(--bg2);
+      color: var(--gris);
+      border: 1px solid #3d2a60;
+      border-radius: 16px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .orden-btn.activo, .orden-btn:hover {
+      background: var(--dorado);
+      color: var(--bg);
+      font-weight: 700;
+      border-color: var(--dorado);
+    }
+    /* ── NAVBAR INFERIOR MÓVIL ── */
+    .nav-bottom {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg2);
+      border-top: 2px solid var(--dorado);
+      padding: 10px 0 6px;
+      z-index: 100;
+    }
+
+    .nav-bottom ul {
+      display: flex;
+      justify-content: space-around;
+      list-style: none;
+    }
+
+    .nav-bottom ul li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.65rem;
+      color: var(--gris);
+      cursor: pointer;
+      gap: 2px;
+      transition: color 0.2s;
+    }
+
+    .nav-bottom ul li span.icono { font-size: 1.4rem; }
+
+    .nav-bottom ul li:hover,
+    .nav-bottom ul li.activo {
+      color: var(--dorado);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--bg2);
+      border-top: 2px solid var(--dorado);
+      padding: 30px 20px 100px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .footer-logo {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--dorado);
+      letter-spacing: 4px;
+      text-shadow: 0 0 16px var(--rosa);
+      margin-bottom: 8px;
+    }
+
+    .footer-logo span { color: var(--rosa); }
+
+    .footer-tagline {
+      font-size: 0.88rem;
+      color: var(--gris);
+      margin-bottom: 20px;
+    }
+
+    .footer-decoracion {
+      font-size: 1.6rem;
+      letter-spacing: 8px;
+      margin-bottom: 20px;
+      opacity: 0.7;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .footer-links a {
+      color: var(--gris);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--dorado); }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: #5a4a72;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .nav-bottom { display: block; }
+      .feed-wrapper { padding: 12px 12px 80px; }
+      .nav-icons { display: none; }
+      .cultura-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-logo">CATRI<span>NA</span></div>
+
+    <div class="search-bar">
+      <input type="text" id="buscador" placeholder="Buscar artículos, artesanías, cultura..."/>
+      <button>🔍</button>
+    </div>
+
+    <div class="nav-icons">
+      <span title="Notificaciones">🔔</span>
+      <span title="Perfil">👤</span>
+      <span title="Carrito">🛒</span>
+    </div>
+  </nav>
+
+  <!-- CATEGORÍAS -->
+  <div class="categorias">
+    <button class="cat-btn activo" onclick="filtrar(this,'todos')">🌎 Todos</button>
+    <button class="cat-btn" onclick="filtrar(this,'juguetes')">🪆 Juguetes</button>
+    <button class="cat-btn" onclick="filtrar(this,'pintura')">🎨 Pintura</button>
+    <button class="cat-btn" onclick="filtrar(this,'ropa')">👘 Ropa</button>
+    <button class="cat-btn" onclick="filtrar(this,'artesanias')">🏺 Artesanías</button>
+    <button class="cat-btn" onclick="filtrar(this,'joyeria')">💎 Joyería</button>
+    <button class="cat-btn" onclick="filtrar(this,'decoracion')">🕯️ Decoración</button>
+    <button class="cat-btn" onclick="filtrar(this,'comida')">🌶️ Comida</button>
+  </div>
+
+  <!-- CONTENIDO (siguiente parte) -->
+  <!-- FEED PRINCIPAL -->
+  <div class="feed-wrapper">
+
+    <!-- SECCIÓN CULTURAL (cards grandes, horizontal) -->
+    <section class="seccion">
+      <h2 class="seccion-titulo">🌺 Cultura Mexicana</h2>
+      <div class="cultura-grid" id="culturaGrid"></div>
+    </section>
+
+    <!-- SECCIÓN TIENDA (lista vertical tipo Mercado Libre) -->
+    <section class="seccion">
+      <h2 class="seccion-titulo">🛍️ Artículos en Venta
+        <span class="orden-btns">
+          <button class="orden-btn activo" onclick="ordenar(this,'popular')">🔥 Populares</button>
+          <button class="orden-btn" onclick="ordenar(this,'nuevos')">✨ Nuevos</button>
+        </span>
+      </h2>
+      <div class="tienda-lista" id="tiendaLista"></div>
+    </section>
+
+  </div>
+  <!-- NAVBAR INFERIOR (móvil) -->
+  <nav class="nav-bottom">
+    <ul>
+      <li class="activo">
+        <span class="icono">🏠</span>
+        <span>Inicio</span>
+      </li>
+      <li>
+        <span class="icono">🔍</span>
+        <span>Buscar</span>
+      </li>
+      <li>
+        <span class="icono">➕</span>
+        <span>Vender</span>
+      </li>
+      <li>
+        <span class="icono">🛒</span>
+        <span>Carrito</span>
+      </li>
+      <li>
+        <span class="icono">👤</span>
+        <span>Perfil</span>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-logo">CATRI<span>NA</span></div>
+    <div class="footer-tagline">El alma de México, en tus manos 🌺</div>
+    <div class="footer-decoracion">💀 🌸 🪆 🏺 🌶️ 🎨</div>
+    <div class="footer-links">
+      <a href="#">Sobre nosotros</a>
+      <a href="#">Vende con nosotros</a>
+      <a href="#">Ayuda</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2026 Catrina · Hecho con 💀 en México</div>
+  </footer>
+
+  <script>
+    // ── DATOS DE MUESTRA ──
+    const culturaItems = [
+      { id:'c1', nombre:'La Catrina', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Jose-Guadalupe-Posada-calavera-garbancera.jpg/240px-Jose-Guadalupe-Posada-calavera-garbancera.jpg', desc:'Símbolo icónico del Día de Muertos, creada por José Guadalupe Posada.' },
+      { id:'c2', nombre:'Muñeca Lele', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Otomi_Doll.jpg/240px-Otomi_Doll.jpg', desc:'Muñeca artesanal otomí, representa la identidad indígena mexicana.' },
+      { id:'c3', nombre:'Talavera', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Talavera_Poblana.jpg/240px-Talavera_Poblana.jpg', desc:'Cerámica tradicional de Puebla, declarada Patrimonio Cultural Inmaterial.' },
+      { id:'c4', nombre:'Alebrijes', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Alebrijes_Oaxaca_2.jpg/240px-Alebrijes_Oaxaca_2.jpg', desc:'Figuras fantásticas de papel maché o madera, origen en Oaxaca y CDMX.' },
+    ];
+
+    const tiendaItems = [
+      { id:'t1', nombre:'Catrina de barro pintada a mano', vendedor:'ArteMaya_MX', precio:'$420 MXN', usd:'≈ $21 USD', popular:true, nuevo:false, img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Jose-Guadalupe-Posada-calavera-garbancera.jpg/120px-Jose-Guadalupe-Posada-calavera-garbancera.jpg' },
+      { id:'t2', nombre:'Huipil bordado Zapoteca', vendedor:'TejedorasOaxaca', precio:'$1,200 MXN', usd:'≈ $60 USD', popular:true, nuevo:true, img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Otomi_Doll.jpg/120px-Otomi_Doll.jpg' },
+      { id:'t3', nombre:'Plato Talavera Puebla', vendedor:'TalaveraSol', precio:'$350 MXN', usd:'≈ $17 USD', popular:false, nuevo:true, img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Talavera_Poblana.jpg/120px-Talavera_Poblana.jpg' },
+      { id:'t4', nombre:'Alebrije lobo madera', vendedor:'MaestroCarlos_Oax', precio:'$890 MXN', usd:'≈ $44 USD', popular:true, nuevo:false, img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Alebrijes_Oaxaca_2.jpg/120px-Alebrijes_Oaxaca_2.jpg' },
+    ];
+
+    let filtroActual = 'todos';
+    let ordenActual = 'popular';
+
+    // ── RENDER CULTURA ──
+    function renderCultura() {
+      const grid = document.getElementById('culturaGrid');
+      grid.innerHTML = culturaItems.map(item => `
+        <div class="cultura-card" onclick="abrirCultura('${item.id}')">
+          <img src="${item.img}" alt="${item.nombre}" onerror="this.src='https://via.placeholder.com/240x140/2d1b4e/FFD700?text=🌺'"/>
+          <div class="cultura-card-info">
+            <h3>${item.nombre}</h3>
+            <p>${item.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── RENDER TIENDA ──
+    function renderTienda() {
+      const lista = document.getElementById('tiendaLista');
+      let items = [...tiendaItems];
+      if (ordenActual === 'popular') items = items.filter(i => i.popular).concat(items.filter(i => !i.popular));
+      if (ordenActual === 'nuevos')  items = items.filter(i => i.nuevo).concat(items.filter(i => !i.nuevo));
+      lista.innerHTML = items.map(item => `
+        <div class="tienda-card">
+          <img src="${item.img}" alt="${item.nombre}" onerror="this.src='https://via.placeholder.com/90x90/2d1b4e/FFD700?text=🏺'"/>
+          <div class="tienda-info">
+            <h3>${item.nombre}</h3>
+            <div class="vendedor">👤 ${item.vendedor}</div>
+            <div class="precio">${item.precio} <span>${item.usd}</span></div>
+          </div>
+          <button class="btn-comprar" onclick="event.stopPropagation()">Comprar</button>
+        </div>
+      `).join('');
+    }
+
+    function filtrar(btn, categoria) {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      filtroActual = categoria;
+      renderTienda();
+    }
+
+    function ordenar(btn, tipo) {
+      document.querySelectorAll('.orden-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      ordenActual = tipo;
+      renderTienda();
+    }
+
+    function abrirCultura(id) {
+      alert('📖 Próximamente: página de detalle cultural para ' + id);
+    }
+
+    // ── INIT ──
+    renderCultura();
+    renderTienda();
+  </script>
+
+</body>
+</html>
