@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catrina · Entrar</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --bg:     #1a0a2e;
+      --bg2:    #2d1b4e;
+      --dorado: #FFD700;
+      --rosa:   #E91E8C;
+      --texto:  #F5F0E8;
+      --gris:   #9e8fb5;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--texto);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1.5px solid var(--dorado);
+      border-radius: 20px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 40px rgba(233,30,140,0.15);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--dorado);
+      letter-spacing: 4px;
+      text-shadow: 0 0 14px var(--rosa);
+      margin-bottom: 6px;
+    }
+
+    .logo span { color: var(--rosa); }
+
+    .subtitulo {
+      text-align: center;
+      color: var(--gris);
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: var(--bg);
+      border-radius: 30px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      border-radius: 26px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--gris);
+      transition: all 0.2s;
+    }
+
+    .tab.activo {
+      background: var(--rosa);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* ── FORMULARIOS ── */
+    .form { display: none; flex-direction: column; gap: 14px; }
+    .form.visible { display: flex; }
+
+    label {
+      font-size: 0.78rem;
+      color: var(--gris);
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid #3d2a60;
+      border-radius: 10px;
+      color: var(--texto);
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus { border-color: var(--dorado); }
+
+    select option { background: var(--bg2); }
+
+    /* ── FOTO DE PERFIL ── */
+    .foto-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .foto-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2.5px solid var(--dorado);
+      object-fit: cover;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      overflow: hidden;
+    }
+
+    .foto-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .btn-foto {
+      background: transparent;
+      border: 1.5px dashed var(--dorado);
+      color: var(--dorado);
+      border-radius: 10px;
+      padding: 7px 18px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-foto:hover { background: var(--dorado); color: var(--bg); }
+
+    /* ── BOTÓN PRINCIPAL ── */
+    .btn-main {
+      background: var(--rosa);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+
+    .btn-main:hover { background: var(--dorado); color: var(--bg); }
+    .btn-main:active { transform: scale(0.97); }
+
+    /* ── GOOGLE BTN ── */
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #fff;
+      color: #333;
+      border: none;
+      border-radius: 30px;
+      padding: 11px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-google:hover { opacity: 0.88; }
+
+    .divisor {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gris);
+      font-size: 0.8rem;
+    }
+
+    .divisor::before, .divisor::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #3d2a60;
+    }
+
+    .error-msg {
+      background: rgba(233,30,140,0.15);
+      border: 1px solid var(--rosa);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      color: var(--rosa);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="logo">CATRI<span>NA</span></div>
+  <div class="subtitulo">El alma de México, en tus manos 🌺</div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab activo" onclick="cambiarTab('login')">Entrar</div>
+    <div class="tab" onclick="cambiarTab('registro')">Crear cuenta</div>
+  </div>
+
+  <!-- MENSAJE DE ERROR -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- ── FORM LOGIN ── -->
+  <div class="form visible" id="formLogin">
+    <div>
+      <label>Correo electrónico</label>
+      <input type="email" id="loginCorreo" placeholder="correo@ejemplo.com"/>
+    </div>
+    <div>
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••"/>
+    </div>
+    <button class="btn-main" onclick="iniciarSesion()">Entrar</button>
+    <div class="divisor">o</div>
+    <button class="btn-google" onclick="loginGoogle()">
+      <img src="https://www.google.com/favicon.ico" width="18"/> Continuar con Google
+    </button>
+  </div>
+
+  <!-- ── FORM REGISTRO ── -->
+  <div class="form" id="formRegistro">
+
+    <!-- Foto -->
+    <div class="foto-wrap">
+      <div class="foto-preview" id="fotoPreview">
+        🌺
+        <img id="fotoImg"/>
+      </div>
+      <button class="btn-foto" onclick="document.getElementById('fotoInput').click()">
+        📷 Subir foto de perfil
+      </button>
+      <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="previsualizarFoto(this)"/>
+    </div>
+
+    <div style="display:flex; gap:10px;">
+      <div style="flex:1">
+        <label>Nombre</label>
+        <input type="text" id="regNombre" placeholder="María"/>
+      </div>
+      <div style="flex:1">
+        <label>Apellidos</label>
+        <input type="text" id="regApellidos" placeholder="García"/>
+      </div>
+    </div>
+
+    <div>
+      <label>Correo electrónico</label>
+      <input type="email" id="regCorreo" placeholder="correo@ejemplo.com"/>
+    </div>
+
+    <div>
+      <label>Contraseña</label>
+      <input type="password" id="regPass" placeholder="Mínimo 6 caracteres"/>
+    </div>
+
+    <div style="display:flex; gap:10px;">
+      <div style="flex:1">
+        <label>Fecha de nacimiento</label>
+        <input type="date" id="regFecha"/>
+      </div>
+      <div style="flex:1">
+        <label>Celular</label>
+        <input type="tel" id="regCelular" placeholder="+52 55..."/>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:10px;">
+      <div style="flex:1">
+        <label>🌍 Mi idioma</label>
+        <select id="regIdioma">
+          <option value="es">🇲🇽 Español</option>
+          <option value="en">🇺🇸 English</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="ja">🇯🇵 日本語</option>
+          <option value="zh">🇨🇳 中文</option>
+          <option value="pt">🇧🇷 Português</option>
+          <option value="it">🇮🇹 Italiano</option>
+          <option value="ko">🇰🇷 한국어</option>
+        </select>
+      </div>
+      <div style="flex:1">
+        <label>📚 Quiero practicar</label>
+        <select id="regIdiomaPrac">
+          <option value="es">🇲🇽 Español</option>
+          <option value="en">🇺🇸 English</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="ja">🇯🇵 日本語</option>
+          <option value="zh">🇨🇳 中文</option>
+          <option value="pt">🇧🇷 Português</option>
+          <option value="it">🇮🇹 Italiano</option>
+          <option value="ko">🇰🇷 한국어</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="registrar()">Crear cuenta</button>
+  </div>
+
+</div>
+
+<script>
+  // ── TABS ──
+  function cambiarTab(tab) {
+    document.querySelectorAll('.tab').forEach((t,i) => {
+      t.classList.toggle('activo', (tab==='login' && i===0)||(tab==='registro' && i===1));
+    });
+    document.getElementById('formLogin').classList.toggle('visible', tab==='login');
+    document.getElementById('formRegistro').classList.toggle('visible', tab==='registro');
+    ocultarError();
+  }
+
+  // ── FOTO ──
+  function previsualizarFoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('fotoImg');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('fotoPreview').innerHTML = '';
+      document.getElementById('fotoPreview').appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── ERRORES ──
+  function mostrarError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function ocultarError() {
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+
+  // ── LOGIN ──
+  function iniciarSesion() {
+    const correo = document.getElementById('loginCorreo').value.trim();
+    const pass   = document.getElementById('loginPass').value;
+    if (!correo || !pass) return mostrarError('Completa todos los campos.');
+
+    const usuarios = JSON.parse(localStorage.getItem('catrina_usuarios') || '[]');
+    const usuario  = usuarios.find(u => u.correo === correo && u.pass === pass);
+
+    if (!usuario) return mostrarError('Correo o contraseña incorrectos.');
+
+    localStorage.setItem('catrina_sesion', JSON.stringify(usuario));
+    window.location.href = 'index.html';
+  }
+
+  // ── GOOGLE (simulado) ──
+  function loginGoogle() {
+    const usuario = {
+      correo: 'usuario@gmail.com',
+      nombre: 'Usuario',
+      apellidos: 'Google',
+      idioma: 'es',
+      idiomaPrac: 'en',
+      foto: '',
+      celular: '',
+      fecha: ''
+    };
+    localStorage.setItem('catrina_sesion', JSON.stringify(usuario));
+    window.location.href = 'index.html';
+  }
+
+  // ── REGISTRO ──
+  function registrar() {
+    const nombre     = document.getElementById('regNombre').value.trim();
+    const apellidos  = document.getElementById('regApellidos').value.trim();
+    const correo     = document.getElementById('regCorreo').value.trim();
+    const pass       = document.getElementById('regPass').value;
+    const fecha      = document.getElementById('regFecha').value;
+    const celular    = document.getElementById('regCelular').value.trim();
+    const idioma     = document.getElementById('regIdioma').value;
+    const idiomaPrac = document.getElementById('regIdiomaPrac').value;
+    const foto       = document.getElementById('fotoImg').src || '';
+
+    if (!nombre || !correo || !pass)
+      return mostrarError('Nombre, correo y contraseña son obligatorios.');
+    if (pass.length < 6)
+      return mostrarError('La contraseña debe tener al menos 6 caracteres.');
+
+    const usuarios = JSON.parse(localStorage.getItem('catrina_usuarios') || '[]');
+    if (usuarios.find(u => u.correo === correo))
+      return mostrarError('Este correo ya está registrado.');
+
+    const nuevoUsuario = { nombre, apellidos, correo, pass, fecha, celular, idioma, idiomaPrac, foto };
+    usuarios.push(nuevoUsuario);
+    localStorage.setItem('catrina_usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('catrina_sesion', JSON.stringify(nuevoUsuario));
+    window.location.href = 'index.html';
+  }
+
+  // ── VERIFICAR SESIÓN ──
+  if (localStorage.getItem('catrina_sesion')) {
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>
